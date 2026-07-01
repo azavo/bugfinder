@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  background: #000000; /* set it on body too, as a fallback */
+  background: #000000;
 }
 
 .app-shell {
@@ -9,7 +9,7 @@ body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* don't stretch children vertically */
+  align-items: flex-start;
 }
 
 .app-container {
