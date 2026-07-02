@@ -106,7 +106,7 @@ function App() {
       <div className="app-container">
         <div className="header">
           <h1 className="title">BUG<span className="secondhalfoftitle">FINDER</span></h1>
-          <img src="../../public/icon2.png" alt="" className="header-icon" />
+          <img src="/icon2.png" alt="" className="header-icon" />
         </div>
 
         <div className="layout">
