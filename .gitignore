@@ -1,3 +1,19 @@
+pkls/
+*.tif
+*.shp
+*.dbf
+*.shx
+*.prj
+us_eco_l3/
+data/
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+geo/
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

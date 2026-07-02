@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 import numpy as np
@@ -11,6 +11,10 @@ from model_loader import MODEL, LABEL_ENCODER, CAT_CATEGORIES, ECOREGIONS, NLCD_
 from features import get_ecoregion, get_land_cover, time_features
 from weather import get_weather_for_datetime, precip_phase
 from inat import get_user_seen_species
+
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 
 #python -m uvicorn main:app --reload --port 8001
@@ -30,8 +34,13 @@ def confirmed_nearby_species(lat, lon, radius_km=5):
     idxs = _location_tree.query_ball_point([lat, lon], r=radius_deg)
     return sorted(set(_species_labels[idxs]))
 '''
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 @app.get("/predict")
-def predict(lat: float, lon: float, datetime_str: str | None = None,
+@limiter.limit("10/minute")
+def predict(request: Request, lat: float, lon: float, datetime_str: str | None = None,
             inat_username: str | None = None, mode: str = "all", order: str | None = None):
     dt = datetime.fromisoformat(datetime_str) if datetime_str else datetime.utcnow()
 
@@ -95,5 +104,6 @@ def predict(lat: float, lon: float, datetime_str: str | None = None,
     }
 
 @app.get("/orders")
-def get_orders():
+@limiter.limit("30/minute")
+def get_orders(request: Request):
     return sorted(set(ORDER_MAP.values()))

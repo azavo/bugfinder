@@ -1,0 +1,8 @@
+fastapi
+redis
+types-redis
+uvicorn
+scikit-learn
+joblib
+geopandas
+rasterio
