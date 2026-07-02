@@ -90,7 +90,7 @@ function App() {
     })
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/predict?${params}`)
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/predict?${params}`)
       if (!response.ok) throw new Error(`Server responded with ${response.status}`)
       const data = await response.json()
       setPredictions(data.predictions)

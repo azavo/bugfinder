@@ -5,19 +5,20 @@ import joblib
 import geopandas as gpd
 
 BASE_DIR = Path(__file__).resolve().parent
-PKL_DIR = BASE_DIR / "pkls"
-GEO_DIR = BASE_DIR / "geo"
-PKL_DIR.mkdir(exist_ok=True)
-GEO_DIR.mkdir(exist_ok=True)
+PKL_DIR = Path("/data/pkls")
+GEO_DIR = Path("/data/geo")
+PKL_DIR.mkdir(exist_ok=True, parents=True)
+GEO_DIR.mkdir(exist_ok=True, parents=True)
 
-RELEASE_BASE = "https://github.com/azavo/insecttargets_2.0/releases/download/v1.0.0/"
+RELEASE_BASE = "https://github.com/azavo/insecttargets_2.0/releases/download/v1.0.0"
 
-def download_if_missing(filename, dest_path, unzip_to=None):
+def download_if_missing(filename, dest_path, unzip_to=None, tmp_dir=None):
     if dest_path.exists():
         return
     print(f"Downloading {filename}...")
     url = f"{RELEASE_BASE}/{filename}"
-    tmp = dest_path.parent / filename
+    save_dir = tmp_dir if tmp_dir else dest_path.parent
+    tmp = save_dir / filename
     urllib.request.urlretrieve(url, tmp)
     if unzip_to:
         print(f"Unzipping {filename}...")
@@ -32,7 +33,8 @@ for filename in ["gb_model.pkl", "gb_label_encoder.pkl", "gb_cat_categories.pkl"
 
 download_if_missing("ecoregions.zip",
                      GEO_DIR / "us_eco_l3" / "us_eco_l3.shp",
-                     unzip_to=GEO_DIR)
+                     unzip_to=GEO_DIR,
+                     tmp_dir=GEO_DIR)
 
 download_if_missing("nlcd_clip.tif", GEO_DIR / "nlcd_clip.tif")
 
